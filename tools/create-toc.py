@@ -115,9 +115,10 @@ def organize_by_categories(files_data: List[Dict]) -> Dict:
 
 
 def generate_toc(organized_files: Dict) -> str:
+    INDENT = 2
     """Generate table of contents markdown."""
     toc_lines = ["## Table of Contents\n"]
-    
+    toc_lines.append("\n") # Markdown linter is happy
     # Sort categories alphabetically
     sorted_categories = sorted(organized_files.keys())
     
@@ -125,31 +126,31 @@ def generate_toc(organized_files: Dict) -> str:
         if category == "Other":
             continue  # Skip other for now
         
-        toc_lines.append(f"### {category}\n")
+        toc_lines.append(f"* {category}\n")
         
         # Check if this category has subcategories (nested structure)
         if isinstance(organized_files[category], dict):
             # Handle nested categories
             sorted_subcategories = sorted(organized_files[category].keys())
             for subcategory in sorted_subcategories:
-                toc_lines.append(f"#### {subcategory}\n")
+                toc_lines.append(f"{' ' * INDENT}* {subcategory}\n")
                 files = sorted(organized_files[category][subcategory], key=lambda x: x['title'])
                 for file_data in files:
-                    toc_lines.append(f"- [{file_data['title']}]({file_data['file']})\n")
+                    toc_lines.append(f"{' ' * INDENT}*  [{file_data['title']}]({file_data['file']})\n")
                 toc_lines.append("")  # Empty line for spacing
         else:
             # Handle simple categories (list of files)
             files = sorted(organized_files[category], key=lambda x: x['title'])
             for file_data in files:
-                toc_lines.append(f"- [{file_data['title']}]({file_data['file']})\n")
+                toc_lines.append(f"{' ' * INDENT}* [{file_data['title']}]({file_data['file']})\n")
             toc_lines.append("")  # Empty line for spacing
     
     # Add other files at the end if any
     if "Other" in organized_files and organized_files["Other"]:
-        toc_lines.append("### Other\n")
+        toc_lines.append("* Other\n")
         files = sorted(organized_files["Other"], key=lambda x: x['title'])
         for file_data in files:
-            toc_lines.append(f"- [{file_data['title']}]({file_data['file']})\n")
+            toc_lines.append(f"{' ' * INDENT}*  [{file_data['title']}]({file_data['file']})\n")
     
     return "".join(toc_lines)
 
