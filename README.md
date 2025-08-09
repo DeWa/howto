@@ -9,6 +9,7 @@ A curated collection of useful how-to guides, tips, tricks, and random bits of i
 * Coding
   * [Bingo With Bitmasking](bingo-with-bitmasking.md)
 * Linux
+  * [How To Use a VPN On a Linux Server](how-to-use-vpn-on-linux-server.md)
   * [UFW Cheatsheet](ufw-cheatsheet.md)
 * Tools
   * [Convert Gif(or MP4) To Telegram Sticker](convert-gif-to-telegram-sticker.md)
