@@ -296,11 +296,68 @@ sudo ufw allow from 192.168.0.0/16 to any app Samba
 # Allow other traffic through local network if needed
 sudo ufw allow from 192.168.0.0/16 proto tcp to any port 8080
 
+# Allow OpenVPN to connect your VPN provider
+sudo ufw allow out to <VPN_SERVER_IP> port 443 proto tcp
+
 # Enable UFW
 sudo ufw enable
 
-# You can now test the connection by disabling OpenVPN and e.g
+# You can now test the connection by disabling OpenVPN and e.g.
 # pinging google.com. It should not go through
 ping google.com
-
 ```
+
+You may have to point Linux DNS to your VPS provider DNS to make it work (and make it more secure as well). This was the case in my setup.
+
+```bash
+sudo vim /etc/resolv.conf
+```
+
+Replace everything with:
+
+```bash
+nameserver <VPS DNS server IP>
+nameserver <VPS secondary DNS server IP>
+```
+
+Some VPN providers still don't support IPv6 so you may have to disable IPv6 support
+in Linux and UFW.
+
+```bash
+sudo vim /etc/sysctl.conf
+```
+
+Add these at the bottom of the file
+
+```bash
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.lo.disable_ipv6=1
+```
+
+Save and make the system reload sysctl.conf
+
+```bash
+sudo sysctl -p
+```
+
+Check that IPv6 has been disabled by running
+
+```bash
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+```
+
+and see if it prints 1.
+
+Next, make UFW stop automatically creating IPv6 rules
+
+```bash
+sudo nano /etc/default/ufw
+```
+
+and change IPV6
+
+```bash
+IPV6=no
+```
+
